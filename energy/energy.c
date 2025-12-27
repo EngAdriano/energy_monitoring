@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "system_state.h"
 
 
 
@@ -8,6 +11,8 @@
 int main()
 {
     stdio_init_all();
+
+    system_state_init();
 
     // Initialise the Wi-Fi chip
     if (cyw43_arch_init()) {
@@ -29,8 +34,8 @@ int main()
         printf("IP address %d.%d.%d.%d\n", ip_address[0], ip_address[1], ip_address[2], ip_address[3]);
     }
 
-    while (true) {
-        printf("Hello, world!\n");
-        sleep_ms(1000);
+    vTaskStartScheduler();
+
+    while (true) {     
     }
 }

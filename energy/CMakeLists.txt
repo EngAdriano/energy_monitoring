@@ -37,7 +37,10 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(energy energy.c )
+add_executable(
+    energy energy.c 
+    core/system_state.c
+    )
 
 pico_set_program_name(energy "energy")
 pico_set_program_version(energy "0.1")
@@ -56,6 +59,7 @@ target_link_libraries(energy
 # Add the standard include files to the build
 target_include_directories(energy PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
+        ${CMAKE_CURRENT_LIST_DIR}/core
 )
 
 # Add any user requested libraries
