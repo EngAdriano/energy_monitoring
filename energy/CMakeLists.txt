@@ -28,6 +28,8 @@ set(PICO_BOARD pico_w CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
+include(${CMAKE_CURRENT_LIST_DIR}/FreeRTOS/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
+
 project(energy C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
@@ -46,7 +48,10 @@ pico_enable_stdio_usb(energy 1)
 
 # Add the standard library to the build
 target_link_libraries(energy
-        pico_stdlib)
+        pico_stdlib
+        FreeRTOS-Kernel
+        FreeRTOS-Kernel-Heap4
+)
 
 # Add the standard include files to the build
 target_include_directories(energy PRIVATE
@@ -56,6 +61,9 @@ target_include_directories(energy PRIVATE
 # Add any user requested libraries
 target_link_libraries(energy 
         pico_cyw43_arch_lwip_threadsafe_background
+        pico_lwip_mqtt
+        hardware_i2c
+        hardware_spi
         )
 
 pico_add_extra_outputs(energy)
