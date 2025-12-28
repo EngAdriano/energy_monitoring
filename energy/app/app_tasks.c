@@ -9,6 +9,7 @@
 #include "mqtt_payload_service.h"
 
 /* Tasks */
+#include "task_ui.h"
 #include "task_env_sensors.h"
 #include "task_energy.h"
 
@@ -18,6 +19,9 @@ void app_tasks_start(void)
     task_env_sensors_start();
     task_energy_start();
     time_manager_start();
+
+    /* Task UI (display) */
+    task_ui_start();
 
     /* Task lwIP (infraestrutura) */
     xTaskCreate(

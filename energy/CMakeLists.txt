@@ -62,6 +62,9 @@ add_executable(
     drivers/st7735/st7735.c
     drivers/st7735/fonts.c
     drivers/eeprom_at24c32/eeprom_at24c32.c
+    tasks/task_ui.c
+    ui/ui_energy.c
+    ui/ui_environment.c
     )
 
 pico_set_program_name(energy "energy")
@@ -93,7 +96,7 @@ target_include_directories(energy PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/drivers/rtc_ds3231
         ${CMAKE_CURRENT_LIST_DIR}/drivers/st7735
         ${CMAKE_CURRENT_LIST_DIR}/drivers/eeprom_at24c32
-
+        ${CMAKE_CURRENT_LIST_DIR}/ui
 )
 
 # Add any user requested libraries

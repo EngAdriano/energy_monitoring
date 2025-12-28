@@ -8,12 +8,18 @@
 #ifndef __ST7735_H__
 #define __ST7735_H__
 
-#include "main.h"
 #include "fonts.h"
 #include <stdbool.h>
 
 #define ST7735_SPI_PORT spi0	//spi0, spi1
 //#define USE_SPI_DMA			//if used DMA for SPI bus
+
+//#define LCD_MISO 4
+#define LCD_CS   17
+#define LCD_SCK  18
+#define LCD_MOSI 19
+#define LCD_RST  9
+#define LCD_DC   20
 
 #define ST7735_1_8_DEFAULT_ORIENTATION	// AliExpress/eBay 1.8" display, default orientation
 //#define ST7735S_1_8_DEFAULT_ORIENTATION 	// WaveShare ST7735S-based 1.8" display, default orientation

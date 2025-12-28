@@ -10,6 +10,8 @@
 #include "stdlib.h"
 
 
+
+
 #define TFT_CS_H()	gpio_put(LCD_CS, 1)
 #define TFT_CS_L()	gpio_put(LCD_CS, 0)
 #define TFT_DC_D()	gpio_put(LCD_DC, 1)
@@ -240,14 +242,31 @@ static void ST7735_WriteChar(uint16_t x, uint16_t y, char ch, FontDef font, uint
 
 void ST7735_Init()
 {
-	ST7735_GPIO_Init();
-	TFT_CS_L();
+    /* Inicializa SPI */
+    spi_init(ST7735_SPI_PORT, 20 * 1000 * 1000);
+
+    gpio_set_function(LCD_SCK, GPIO_FUNC_SPI);
+    gpio_set_function(LCD_MOSI, GPIO_FUNC_SPI);
+
+    gpio_init(LCD_CS);
+    gpio_init(LCD_DC);
+    gpio_init(LCD_RST);
+
+    gpio_set_dir(LCD_CS, GPIO_OUT);
+    gpio_set_dir(LCD_DC, GPIO_OUT);
+    gpio_set_dir(LCD_RST, GPIO_OUT);
+
+    TFT_CS_H();
+
     ST7735_Reset();
+
+    TFT_CS_L();
     ST7735_ExecuteCommandList(init_cmds1);
     ST7735_ExecuteCommandList(init_cmds2);
     ST7735_ExecuteCommandList(init_cmds3);
     TFT_CS_H();
 }
+
 
 void ST7735_DrawPixel(uint16_t x, uint16_t y, uint16_t color)
 {
