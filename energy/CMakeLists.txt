@@ -38,14 +38,21 @@ pico_sdk_init()
 # Add executable. Default name is the project name, version 0.1
 
 add_executable(
-    energy energy.c 
+    energy
+    energy.c
+
+    app/app_init.c
+    app/app_tasks.c
+
     core/system_state.c
+
     tasks/task_env_sensors.c
     tasks/task_energy.c
+
     services/wifi_manager.c
     services/mqtt_manager.c
-    services/lwip_poll_service.c
     services/mqtt_payload_service.c
+    services/lwip_poll_service.c
     )
 
 pico_set_program_name(energy "energy")
@@ -65,6 +72,7 @@ target_link_libraries(energy
 # Add the standard include files to the build
 target_include_directories(energy PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
+        ${CMAKE_CURRENT_LIST_DIR}/app
         ${CMAKE_CURRENT_LIST_DIR}/core
         ${CMAKE_CURRENT_LIST_DIR}/tasks
         ${CMAKE_CURRENT_LIST_DIR}/services
