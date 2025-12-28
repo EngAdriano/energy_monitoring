@@ -4,6 +4,7 @@
 /* Services */
 #include "wifi_manager.h"
 #include "mqtt_manager.h"
+#include "time_manager.h"
 #include "lwip_poll_service.h"
 #include "mqtt_payload_service.h"
 
@@ -16,6 +17,7 @@ void app_tasks_start(void)
     /* Tasks de aquisição */
     task_env_sensors_start();
     task_energy_start();
+    time_manager_start();
 
     /* Task lwIP (infraestrutura) */
     xTaskCreate(

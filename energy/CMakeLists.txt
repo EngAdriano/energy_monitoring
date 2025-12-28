@@ -45,6 +45,7 @@ add_executable(
     app/app_tasks.c
 
     core/system_state.c
+    core/time_manager.c
 
     tasks/task_env_sensors.c
     tasks/task_energy.c
@@ -56,7 +57,8 @@ add_executable(
 
     drivers/aht10/aht10.c
     drivers/bh1750/bh1750.c
-
+    drivers/pzem004t/pzem004t.c
+    drivers/rtc_ds3231/rtc_ds3231.c
     
     )
 
@@ -85,6 +87,9 @@ target_include_directories(energy PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/drivers
         ${CMAKE_CURRENT_LIST_DIR}/drivers/aht10
         ${CMAKE_CURRENT_LIST_DIR}/drivers/bh1750
+        ${CMAKE_CURRENT_LIST_DIR}/drivers/pzem004t
+        ${CMAKE_CURRENT_LIST_DIR}/drivers/rtc_ds3231
+
 )
 
 # Add any user requested libraries

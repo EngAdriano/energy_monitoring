@@ -23,6 +23,7 @@ void vTaskMQTTPayload(void *pv)
 
     env_data_t    env;
     energy_data_t energy;
+    app_datetime_t t;
 
     for (;;)
     {
@@ -36,6 +37,7 @@ void vTaskMQTTPayload(void *pv)
         /* Lê estado global (thread-safe) */
         system_state_get_env(&env);
         system_state_get_energy(&energy);
+        system_state_get_time(&t);
 
         /* Opcional: só publica se dados forem válidos */
         if (!env.valid || !energy.valid)
@@ -47,6 +49,7 @@ void vTaskMQTTPayload(void *pv)
         /* Monta payload JSON */
         snprintf(payload, sizeof(payload),
             "{"
+              "\"timestamp\":\"%04d-%02d-%02d %02d:%02d:%02d\","
               "\"env\":{"
                 "\"temperature\":%.2f,"
                 "\"humidity\":%.2f,"
@@ -61,6 +64,8 @@ void vTaskMQTTPayload(void *pv)
                 "\"pf\":%.2f"
               "}"
             "}",
+            t.year, t.month, t.day,
+            t.hour, t.min, t.sec,
             env.temperature,
             env.humidity,
             env.lux,
