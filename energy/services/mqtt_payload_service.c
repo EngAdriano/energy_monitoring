@@ -7,11 +7,12 @@
 #include "system_state.h"
 #include "mqtt_manager.h"
 #include "mqtt_payload_service.h"
+#include "mqtt_topics.h"
+
 
 /* =========================================================
  * Configuração
  * ========================================================= */
-#define MQTT_TOPIC_STATUS       "embarca/energy/status"
 #define MQTT_PAYLOAD_PERIOD_MS  5000
 
 void vTaskMQTTPayload(void *pv)

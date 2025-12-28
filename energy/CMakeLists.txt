@@ -53,6 +53,11 @@ add_executable(
     services/mqtt_manager.c
     services/mqtt_payload_service.c
     services/lwip_poll_service.c
+
+    drivers/aht10/aht10.c
+    drivers/bh1750/bh1750.c
+
+    
     )
 
 pico_set_program_name(energy "energy")
@@ -76,6 +81,10 @@ target_include_directories(energy PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/core
         ${CMAKE_CURRENT_LIST_DIR}/tasks
         ${CMAKE_CURRENT_LIST_DIR}/services
+        ${CMAKE_CURRENT_LIST_DIR}/include
+        ${CMAKE_CURRENT_LIST_DIR}/drivers
+        ${CMAKE_CURRENT_LIST_DIR}/drivers/aht10
+        ${CMAKE_CURRENT_LIST_DIR}/drivers/bh1750
 )
 
 # Add any user requested libraries

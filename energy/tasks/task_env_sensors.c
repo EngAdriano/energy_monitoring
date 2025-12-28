@@ -1,35 +1,38 @@
-#include <stdio.h>
 #include "FreeRTOS.h"
 #include "task.h"
+#include "hardware/i2c.h"
+#include "pico/stdlib.h"
 
-#include "core/system_state.h"
-#include "tasks/task_env_sensors.h"
+#include "system_state.h"
+#include "project_config.h"
+#include "aht10.h"
+#include "bh1750.h"
 
-#define ENV_TASK_STACK   1024
-#define ENV_TASK_PRIO    2
-#define ENV_TASK_PERIOD pdMS_TO_TICKS(2000)
-
-static void task_env_sensors(void *pv)
+void task_env_sensors(void *pv)
 {
     (void) pv;
 
-    while (1) {
-        /* Simulação inicial */
-        env_data_t env = {
-            .temperature = 25.0f,
-            .humidity    = 60.0f,
-            .lux         = 120.0f,
-            .valid       = true
-        };
+    env_data_t env = {0};
+
+    i2c_init(I2C_ENV_PORT, I2C_ENV_BAUDRATE);
+    gpio_set_function(I2C_ENV_SDA_PIN, GPIO_FUNC_I2C);
+    gpio_set_function(I2C_ENV_SCL_PIN, GPIO_FUNC_I2C);
+
+    gpio_pull_up(I2C_ENV_SDA_PIN);
+    gpio_pull_up(I2C_ENV_SCL_PIN);
+    aht10_init();
+    bh1750_init();
+
+    for (;;)
+    {
+        bool ok1 = aht10_read(&env.temperature, &env.humidity);
+        bool ok2 = bh1750_read(&env.lux);
+
+        env.valid = ok1 && ok2;
 
         system_state_set_env(&env);
 
-        printf("[ENV] T=%.1f H=%.1f L=%.1f\n",
-               env.temperature,
-               env.humidity,
-               env.lux);
-
-        vTaskDelay(ENV_TASK_PERIOD);
+        vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
 
@@ -38,9 +41,9 @@ void task_env_sensors_start(void)
     xTaskCreate(
         task_env_sensors,
         "env",
-        ENV_TASK_STACK,
+        1024,
         NULL,
-        ENV_TASK_PRIO,
+        2,
         NULL
     );
 }
