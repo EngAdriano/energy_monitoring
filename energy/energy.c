@@ -4,8 +4,12 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "system_state.h"
-
-
+#include "task_env_sensors.h"
+#include "task_energy.h"
+#include "wifi_manager.h"
+#include "mqtt_manager.h"
+#include "lwip_poll_service.h"
+#include "mqtt_payload_service.h"
 
 
 int main()
@@ -14,28 +18,25 @@ int main()
 
     system_state_init();
 
-    // Initialise the Wi-Fi chip
-    if (cyw43_arch_init()) {
-        printf("Wi-Fi init failed\n");
-        return -1;
-    }
+    /* Sensores podem iniciar antes */
+    task_env_sensors_start();
+    task_energy_start();
 
-    // Enable wifi station
-    cyw43_arch_enable_sta_mode();
+    /* Wi-Fi PRIMEIRO */
+    wifi_manager_init();
 
-    printf("Connecting to Wi-Fi...\n");
-    if (cyw43_arch_wifi_connect_timeout_ms("Your Wi-Fi SSID", "Your Wi-Fi Password", CYW43_AUTH_WPA2_AES_PSK, 30000)) {
-        printf("failed to connect.\n");
-        return 1;
-    } else {
-        printf("Connected.\n");
-        // Read the ip address in a human readable way
-        uint8_t *ip_address = (uint8_t*)&(cyw43_state.netif[0].ip_addr.addr);
-        printf("IP address %d.%d.%d.%d\n", ip_address[0], ip_address[1], ip_address[2], ip_address[3]);
-    }
+    /* MQTT SÓ DEPOIS do Wi-Fi */
+    mqtt_manager_init();
+
+    /* lwIP poll (obrigatória) */
+    xTaskCreate(vTaskLWIPPoll,       "lwip",     512,  NULL, 3, NULL);
+
+    /* Tasks MQTT */
+    xTaskCreate(vTaskMQTTConnection, "mqtt_con", 1024, NULL, 2, NULL);
+    xTaskCreate(vTaskMQTTPublisher,  "mqtt_pub", 1024, NULL, 2, NULL);
+    xTaskCreate(vTaskMQTTPayload,    "mqtt_pay", 1024, NULL, 2, NULL);
 
     vTaskStartScheduler();
 
-    while (true) {     
-    }
+    while (true) {}
 }

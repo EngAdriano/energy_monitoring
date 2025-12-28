@@ -40,6 +40,12 @@ pico_sdk_init()
 add_executable(
     energy energy.c 
     core/system_state.c
+    tasks/task_env_sensors.c
+    tasks/task_energy.c
+    services/wifi_manager.c
+    services/mqtt_manager.c
+    services/lwip_poll_service.c
+    services/mqtt_payload_service.c
     )
 
 pico_set_program_name(energy "energy")
@@ -60,6 +66,8 @@ target_link_libraries(energy
 target_include_directories(energy PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
         ${CMAKE_CURRENT_LIST_DIR}/core
+        ${CMAKE_CURRENT_LIST_DIR}/tasks
+        ${CMAKE_CURRENT_LIST_DIR}/services
 )
 
 # Add any user requested libraries
