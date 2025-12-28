@@ -59,7 +59,9 @@ add_executable(
     drivers/bh1750/bh1750.c
     drivers/pzem004t/pzem004t.c
     drivers/rtc_ds3231/rtc_ds3231.c
-    
+    drivers/st7735/st7735.c
+    drivers/st7735/fonts.c
+    drivers/eeprom_at24c32/eeprom_at24c32.c
     )
 
 pico_set_program_name(energy "energy")
@@ -89,6 +91,8 @@ target_include_directories(energy PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/drivers/bh1750
         ${CMAKE_CURRENT_LIST_DIR}/drivers/pzem004t
         ${CMAKE_CURRENT_LIST_DIR}/drivers/rtc_ds3231
+        ${CMAKE_CURRENT_LIST_DIR}/drivers/st7735
+        ${CMAKE_CURRENT_LIST_DIR}/drivers/eeprom_at24c32
 
 )
 
