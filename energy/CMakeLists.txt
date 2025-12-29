@@ -55,6 +55,8 @@ add_executable(
     services/mqtt_manager.c
     services/mqtt_payload_service.c
     services/lwip_poll_service.c
+    services/webserver/webserver_task.c
+    services/auth/auth_storage.c
 
     drivers/aht10/aht10.c
     drivers/bh1750/bh1750.c
@@ -67,6 +69,8 @@ add_executable(
     ui/ui_energy.c
     ui/ui_environment.c
     ui/ui_events.c
+
+    utils/crypto/sha256.c
 
     )
 
@@ -91,6 +95,8 @@ target_include_directories(energy PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/core
         ${CMAKE_CURRENT_LIST_DIR}/tasks
         ${CMAKE_CURRENT_LIST_DIR}/services
+        ${CMAKE_CURRENT_LIST_DIR}/services/webserver
+        ${CMAKE_CURRENT_LIST_DIR}/services/auth
         ${CMAKE_CURRENT_LIST_DIR}/include
         ${CMAKE_CURRENT_LIST_DIR}/drivers
         ${CMAKE_CURRENT_LIST_DIR}/drivers/aht10
@@ -100,6 +106,8 @@ target_include_directories(energy PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/drivers/st7735
         ${CMAKE_CURRENT_LIST_DIR}/drivers/eeprom_at24c32
         ${CMAKE_CURRENT_LIST_DIR}/ui
+        ${CMAKE_CURRENT_LIST_DIR}/utils
+        ${CMAKE_CURRENT_LIST_DIR}/utils/crypto
 )
 
 # Add any user requested libraries
