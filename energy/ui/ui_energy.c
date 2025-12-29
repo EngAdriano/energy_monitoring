@@ -60,10 +60,10 @@ static void ui_draw_main_frame(void)
     ui_draw_header();
 
     ui_draw_card(4,  22, "Voltage");
-    ui_draw_card(82, 22, "Current");
+    ui_draw_card(82, 22, "Corrente");
 
-    ui_draw_card(4,  56, "Power");
-    ui_draw_card(82, 56, "Energy");
+    ui_draw_card(4,  56, "Potencia");
+    ui_draw_card(82, 56, "Energia");
 
     ui_draw_card(4,  90, "Freq");
     ui_draw_card(82, 90, "PF");
