@@ -13,6 +13,7 @@
 /* Services */
 #include "wifi_manager.h"
 #include "mqtt_manager.h"
+#include "factory_reset.h"
 
 /* App */
 #include "app_tasks.h"
@@ -46,6 +47,10 @@ void app_init(void)
 
     /* Estado global */
     system_state_init();
+
+    /* --------- FACTORY RESET --------- */
+    factory_reset_init();
+    factory_reset_task_start();
 
     /* Eventos da UI */
     ui_event_group = xEventGroupCreate();
