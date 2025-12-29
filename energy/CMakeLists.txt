@@ -58,6 +58,7 @@ add_executable(
     services/webserver/webserver_task.c
     services/auth/auth_storage.c
     services/factory_reset/factory_reset.c
+    services/rtc/rtc_service.c
 
     drivers/aht10/aht10.c
     drivers/bh1750/bh1750.c
@@ -99,6 +100,7 @@ target_include_directories(energy PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/services/webserver
         ${CMAKE_CURRENT_LIST_DIR}/services/auth
         ${CMAKE_CURRENT_LIST_DIR}/services/factory_reset
+        ${CMAKE_CURRENT_LIST_DIR}/services/rtc
         ${CMAKE_CURRENT_LIST_DIR}/include
         ${CMAKE_CURRENT_LIST_DIR}/drivers
         ${CMAKE_CURRENT_LIST_DIR}/drivers/aht10

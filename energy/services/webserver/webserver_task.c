@@ -9,7 +9,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-/* Pico / Wi-Fi */
+/* Pico */
 #include "pico/stdlib.h"
 
 /* lwIP RAW TCP */
@@ -23,13 +23,15 @@
 #include "auth_storage.h"
 #include "sha256.h"
 
+/* RTC Service */
+#include "rtc_service.h"
+
 /* =====================================================
  * Configurações
  * ===================================================== */
 #define WEB_PORT                80
 #define SESSION_TIMEOUT_MS      (5 * 60 * 1000)
 
-/* Stack da task do webserver */
 #define WEBSERVER_STACK_WORDS   2048
 #define WEBSERVER_PRIORITY      2
 
@@ -39,7 +41,7 @@
 static bool       user_logged = false;
 static TickType_t last_activity_tick = 0;
 
-/* Credenciais carregadas da EEPROM */
+/* Credenciais */
 static char    login_user[32];
 static uint8_t login_pass_hash[32];
 
@@ -125,6 +127,36 @@ static const char html_auth_cfg[] =
 "</script></body></html>";
 
 /* =====================================================
+ * HTML – CONFIGURAR DATA / HORA (RTC)
+ * ===================================================== */
+static const char html_time_cfg[] =
+"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n"
+"<!DOCTYPE html><html><head><meta charset='utf-8'>"
+"<title>Configurar Data/Hora</title>"
+"<style>"
+"body{background:#0f172a;color:#e5e7eb;font-family:Arial;"
+"display:flex;justify-content:center;align-items:center;height:100vh}"
+".box{background:#1e293b;padding:20px;border-radius:8px;width:320px}"
+"h2{text-align:center;color:#38bdf8}"
+"input,button{width:100%;padding:10px;margin-top:10px;border-radius:4px;border:none}"
+"button{background:#0284c7;color:#fff;font-size:16px}"
+"a{color:#38bdf8;text-align:center;display:block;margin-top:12px}"
+"</style></head>"
+"<body><div class='box'>"
+"<h2>Data e Hora</h2>"
+"<input id='d' placeholder='DD/MM/AAAA'>"
+"<input id='t' placeholder='HH:MM:SS'>"
+"<button onclick='save()'>Salvar</button>"
+"<p id='m'></p>"
+"<a href='/'>Voltar</a>"
+"</div>"
+"<script>"
+"function save(){"
+"fetch('/config/time',{method:'POST',body:d.value+','+t.value})"
+".then(r=>r.text()).then(t=>m.innerText=t);}"
+"</script></body></html>";
+
+/* =====================================================
  * HTML – DASHBOARD
  * ===================================================== */
 static const char html_index[] =
@@ -147,6 +179,7 @@ static const char html_index[] =
 
 "<div class='top'>"
 "<a href='/config/auth'>Configurar Login</a>"
+"<a href='/config/time'>Configurar Data/Hora</a>"
 "<a href='/logout'>Logout</a>"
 "</div>"
 
@@ -180,7 +213,7 @@ static const char html_index[] =
 "</script></body></html>";
 
 /* =====================================================
- * HTTP Handler (RAW TCP)
+ * HTTP Handler
  * ===================================================== */
 static err_t http_recv(void *arg, struct tcp_pcb *tpcb,
                        struct pbuf *p, err_t err)
@@ -196,7 +229,7 @@ static err_t http_recv(void *arg, struct tcp_pcb *tpcb,
     char *req = calloc(p->len + 1, 1);
     memcpy(req, p->payload, p->len);
 
-    /* ---------------- LOGIN ---------------- */
+    /* LOGIN */
     if (strstr(req, "POST /login"))
     {
         char u[32] = {0}, pw[32] = {0};
@@ -220,7 +253,7 @@ static err_t http_recv(void *arg, struct tcp_pcb *tpcb,
         }
     }
 
-    /* ---------------- LOGOUT ---------------- */
+    /* LOGOUT */
     else if (strstr(req, "GET /logout"))
     {
         user_logged = false;
@@ -228,7 +261,7 @@ static err_t http_recv(void *arg, struct tcp_pcb *tpcb,
                   strlen(html_login), TCP_WRITE_FLAG_COPY);
     }
 
-    /* -------- CONFIG AUTH – GET -------- */
+    /* CONFIG AUTH */
     else if (strstr(req, "GET /config/auth"))
     {
         if (!session_is_valid())
@@ -239,7 +272,6 @@ static err_t http_recv(void *arg, struct tcp_pcb *tpcb,
                       strlen(html_auth_cfg), TCP_WRITE_FLAG_COPY);
     }
 
-    /* -------- CONFIG AUTH – POST -------- */
     else if (strstr(req, "POST /config/auth"))
     {
         if (!session_is_valid())
@@ -256,25 +288,72 @@ static err_t http_recv(void *arg, struct tcp_pcb *tpcb,
             if (body)
                 sscanf(body + 4, "%31[^,],%31s", user, pass);
 
-            if (auth_save(user, pass))
-            {
-                auth_load(login_user, login_pass_hash);
-                user_logged = false;
+            auth_save(user, pass);
+            auth_load(login_user, login_pass_hash);
+            user_logged = false;
 
-                tcp_write(tpcb,
-                    "HTTP/1.1 200 OK\r\n\r\nCredenciais atualizadas. Faça login novamente.",
-                    78, TCP_WRITE_FLAG_COPY);
-            }
-            else
-            {
-                tcp_write(tpcb,
-                    "HTTP/1.1 400 Bad Request\r\n\r\nErro ao salvar",
-                    53, TCP_WRITE_FLAG_COPY);
-            }
+            tcp_write(tpcb,
+                "HTTP/1.1 200 OK\r\n\r\nCredenciais atualizadas. Faça login novamente.",
+                78, TCP_WRITE_FLAG_COPY);
         }
     }
 
-    /* ---------------- ENV (JSON) ---------------- */
+    /* CONFIG TIME */
+    else if (strstr(req, "GET /config/time"))
+    {
+        if (!session_is_valid())
+            tcp_write(tpcb, "HTTP/1.1 403 Forbidden\r\n\r\n",
+                      26, TCP_WRITE_FLAG_COPY);
+        else
+            tcp_write(tpcb, html_time_cfg,
+                      strlen(html_time_cfg), TCP_WRITE_FLAG_COPY);
+    }
+
+    else if (strstr(req, "POST /config/time"))
+    {
+        if (!session_is_valid())
+        {
+            tcp_write(tpcb, "HTTP/1.1 403 Forbidden\r\n\r\n",
+                      26, TCP_WRITE_FLAG_COPY);
+        }
+        else
+        {
+            app_datetime_t dt = {0};
+            char *body = strstr(req, "\r\n\r\n");
+
+            if (body)
+            {
+                sscanf(body + 4,
+                    "%d/%d/%d,%d:%d:%d",
+                    &dt.day, &dt.month, &dt.year,
+                    &dt.hour, &dt.min, &dt.sec);
+                   
+                    if (dt.day < 1 || dt.day > 31 ||
+                    dt.month < 1 || dt.month > 12 ||
+                    dt.year < 2020 || dt.year > 2100)
+                    {
+                        tcp_write(tpcb,
+                            "HTTP/1.1 400 Bad Request\r\n\r\nData inválida",
+                            43, TCP_WRITE_FLAG_COPY);
+                    }
+                    else
+                    {
+                        dt.valid = true;
+                    }
+            }
+
+            if (rtc_service_set_datetime(&dt))
+                tcp_write(tpcb,
+                    "HTTP/1.1 200 OK\r\n\r\nData e hora atualizadas",
+                    47, TCP_WRITE_FLAG_COPY);
+            else
+                tcp_write(tpcb,
+                    "HTTP/1.1 400 Bad Request\r\n\r\nErro ao atualizar RTC",
+                    55, TCP_WRITE_FLAG_COPY);
+        }
+    }
+
+    /* ENV */
     else if (strstr(req, "GET /env"))
     {
         if (!session_is_valid())
@@ -291,13 +370,12 @@ static err_t http_recv(void *arg, struct tcp_pcb *tpcb,
                 "{\"temperature\":%.2f,\"humidity\":%.2f,\"lux\":%.2f}",
                 st.env.valid ? st.env.temperature : 0.0f,
                 st.env.valid ? st.env.humidity    : 0.0f,
-                st.env.valid ? st.env.lux         : 0.0f
-            );
+                st.env.valid ? st.env.lux         : 0.0f);
             tcp_write(tpcb, buf, strlen(buf), TCP_WRITE_FLAG_COPY);
         }
     }
 
-    /* ---------------- ENERGY (JSON) ---------------- */
+    /* ENERGY */
     else if (strstr(req, "GET /energy"))
     {
         if (!session_is_valid())
@@ -318,13 +396,12 @@ static err_t http_recv(void *arg, struct tcp_pcb *tpcb,
                 st.energy.valid ? st.energy.power     : 0.0f,
                 st.energy.valid ? st.energy.energy    : 0.0f,
                 st.energy.valid ? st.energy.frequency : 0.0f,
-                st.energy.valid ? st.energy.pf        : 0.0f
-            );
+                st.energy.valid ? st.energy.pf        : 0.0f);
             tcp_write(tpcb, buf, strlen(buf), TCP_WRITE_FLAG_COPY);
         }
     }
 
-    /* ---------------- DEFAULT ---------------- */
+    /* DEFAULT */
     else
     {
         if (session_is_valid())
@@ -358,10 +435,7 @@ static err_t http_accept(void *arg,
  * ===================================================== */
 void vTaskWebServer(void *pv)
 {
-    /* Aguarda sistema estabilizar */
     vTaskDelay(pdMS_TO_TICKS(3000));
-
-    /* Carrega credenciais da EEPROM */
     auth_load(login_user, login_pass_hash);
 
     struct tcp_pcb *pcb = tcp_new();
