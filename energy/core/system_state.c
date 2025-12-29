@@ -1,6 +1,9 @@
 #include "system_state.h"
 #include <string.h>
 
+/* Tela UI atual */
+static ui_screen_t ui_screen = UI_SCREEN_SPLASH;
+
 /* Estado interno */
 static system_state_t g_state;
 static SemaphoreHandle_t g_mutex;
@@ -101,4 +104,25 @@ void system_state_get_time(app_datetime_t *time)
     lock();
     *time = g_state.time;
     unlock();
+}
+
+/* =====================
+ * UI SCREEN
+ * ===================== */
+void system_state_set_ui_screen(ui_screen_t s)
+{
+    ui_screen = s;
+}
+
+ui_screen_t system_state_get_ui_screen(void)
+{
+    return ui_screen;
+}
+
+void system_state_toggle_ui_screen(void)
+{
+    if (ui_screen == UI_SCREEN_ENERGY)
+        ui_screen = UI_SCREEN_ENV;
+    else if (ui_screen == UI_SCREEN_ENV)
+        ui_screen = UI_SCREEN_ENERGY;
 }

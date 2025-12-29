@@ -49,6 +49,7 @@ add_executable(
 
     tasks/task_env_sensors.c
     tasks/task_energy.c
+    tasks/task_ui.c
 
     services/wifi_manager.c
     services/mqtt_manager.c
@@ -62,9 +63,12 @@ add_executable(
     drivers/st7735/st7735.c
     drivers/st7735/fonts.c
     drivers/eeprom_at24c32/eeprom_at24c32.c
-    tasks/task_ui.c
+
+    
     ui/ui_energy.c
     ui/ui_environment.c
+    ui/ui_events.c
+
     )
 
 pico_set_program_name(energy "energy")

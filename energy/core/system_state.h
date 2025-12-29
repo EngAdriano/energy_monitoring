@@ -64,6 +64,13 @@ typedef struct {
     app_datetime_t    time;
 } system_state_t;
 
+typedef enum {
+    UI_SCREEN_SPLASH = 0,
+    UI_SCREEN_ENERGY,
+    UI_SCREEN_ENV
+} ui_screen_t;
+
+
 /* =====================
  * API
  * ===================== */
@@ -80,5 +87,9 @@ void system_state_get_energy(energy_data_t *energy);
 void system_state_get_wifi(wifi_state_t *wifi);
 void system_state_get_mqtt(mqtt_state_t *mqtt);
 void system_state_get_time(app_datetime_t *time);
+
+void system_state_set_ui_screen(ui_screen_t s);
+ui_screen_t system_state_get_ui_screen(void);
+void system_state_toggle_ui_screen(void);
 
 #endif /* SYSTEM_STATE_H */

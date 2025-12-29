@@ -17,8 +17,8 @@ static void ui_display_init_once(void)
 {
     if (!display_initialized)
     {
-        ST7735_Init();
-        ST7735_SetRotation(1);   /* Paisagem: 160x128 */
+        //ST7735_Init();
+        //ST7735_SetRotation(1);   /* Paisagem: 160x128 */
         display_initialized = true;
     }
 }
@@ -93,6 +93,9 @@ void UI_Energy_ShowSplash(void)
 
     ST7735_DrawString(20, 110, "Eng. Jose Adriano",
                       Font_7x10, ST7735_YELLOW, ST7735_BLACK);
+
+    /* Tempo da splash screen */
+    vTaskDelay(pdMS_TO_TICKS(2500));
 }
 
 /* ================= Init ================= */

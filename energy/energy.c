@@ -17,7 +17,5 @@ int main(void)
 
     vTaskStartScheduler();
 
-    while (true) {
-        /* Nunca deve chegar aqui */
-    }
+    while (true) {}
 }
