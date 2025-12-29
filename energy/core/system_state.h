@@ -47,7 +47,9 @@ typedef struct {
 typedef struct {
     bool connected;
     int  rssi;
+    char ip[16];   // "xxx.xxx.xxx.xxx"
 } wifi_state_t;
+
 
 typedef struct {
     bool connected;

@@ -101,8 +101,16 @@ void UI_Env_Update(const system_state_t *state)
     /* ---------- Wi-Fi ---------- */
     ui_update_wifi_icon(state->wifi.connected);
 
-    /* ---------- IP (placeholder por enquanto) ---------- */
-    ui_update_ip("IP OK");
+    /* ---------- IP ---------- */
+    
+    if (state->wifi.connected)
+    {
+        ui_update_ip(state->wifi.ip);
+    }
+    else
+    {
+        ui_update_ip("---.---.---.---");
+    }
 
     /* ---------- Hora ---------- */
     if (state->time.valid)
