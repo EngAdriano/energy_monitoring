@@ -63,7 +63,6 @@ add_executable(
     drivers/st7735/st7735.c
     drivers/st7735/fonts.c
     drivers/eeprom_at24c32/eeprom_at24c32.c
-
     
     ui/ui_energy.c
     ui/ui_environment.c

@@ -7,8 +7,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "core/system_state.h"
-#include "services/wifi_manager.h"
+#include "system_state.h"
+#include "wifi_manager.h"
+
 
 /* Ajuste conforme sua rede */
 #define WIFI_SSID     "Lu e Deza"
