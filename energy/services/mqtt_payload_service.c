@@ -23,7 +23,7 @@ void vTaskMQTTPayload(void *pv)
 
     env_data_t    env;
     energy_data_t energy;
-    app_datetime_t t;
+    //app_datetime_t t;
 
     for (;;)
     {
@@ -37,7 +37,7 @@ void vTaskMQTTPayload(void *pv)
         /* Lê estado global (thread-safe) */
         system_state_get_env(&env);
         system_state_get_energy(&energy);
-        system_state_get_time(&t);
+        //system_state_get_time(&t);
 
         /* Opcional: só publica se dados forem válidos */
         if (!env.valid || !energy.valid)
