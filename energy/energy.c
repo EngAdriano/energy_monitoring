@@ -11,7 +11,7 @@ int main(void)
 {
     stdio_init_all();
 
-    printf("Iniciando Monitorament de energia..\n");
+    //printf("Iniciando Monitorament de energia..\n");
 
     app_init();
 

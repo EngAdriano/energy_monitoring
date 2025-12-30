@@ -443,7 +443,7 @@ void vTaskWebServer(void *pv)
     pcb = tcp_listen(pcb);
     tcp_accept(pcb, http_accept);
 
-    printf("[WEB] Servidor ativo na porta %d\n", WEB_PORT);
+    //printf("[WEB] Servidor ativo na porta %d\n", WEB_PORT);
 
     while (1)
         vTaskDelay(pdMS_TO_TICKS(10000));

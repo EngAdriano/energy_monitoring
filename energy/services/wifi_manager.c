@@ -84,15 +84,16 @@ static void wifi_task(void *pv)
         /* Inicia WebServer uma única vez após conexão */
         if (wifi.connected && !web_started)
         {
-            printf("[WEB] Iniciando WebServer...\n");
+            //printf("[WEB] Iniciando WebServer...\n");
             webserver_start();
             web_started = true;
         }
 
+        /*/
         printf("[WIFI] %s | RSSI=%d | IP=%s\n",
                wifi.connected ? "CONNECTED" : "DISCONNECTED",
                wifi.rssi,
-               wifi.ip);
+               wifi.ip);*/
 
         vTaskDelay(pdMS_TO_TICKS(WIFI_TASK_DELAY_MS));
     }
@@ -111,7 +112,7 @@ void wifi_manager_init(void)
 
     cyw43_arch_enable_sta_mode();
 
-    printf("[WIFI] Conectando em %s...\n", WIFI_SSID);
+    //printf("[WIFI] Conectando em %s...\n", WIFI_SSID);
 
     int rc = cyw43_arch_wifi_connect_timeout_ms(
         WIFI_SSID,
@@ -126,7 +127,7 @@ void wifi_manager_init(void)
     }
     else
     {
-        printf("[WIFI] Conectado com sucesso\n");
+        //printf("[WIFI] Conectado com sucesso\n");
     }
 
     xTaskCreate(

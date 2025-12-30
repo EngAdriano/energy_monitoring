@@ -48,7 +48,7 @@ static void vTaskFactoryReset(void *pv)
                 if ((xTaskGetTickCount() - start) >
                     pdMS_TO_TICKS(FACTORY_RESET_TIME_MS))
                 {
-                    printf("[FACTORY] Reset de credenciais\n");
+                    //printf("[FACTORY] Reset de credenciais\n");
 
                     auth_factory_reset();
 

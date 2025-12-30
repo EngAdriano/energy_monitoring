@@ -48,6 +48,30 @@ void vTaskMQTTPayload(void *pv)
 
         /* Monta payload JSON */
         snprintf(payload, sizeof(payload),
+          "{"
+          "\"temperature\":%.2f,"
+          "\"humidity\":%.2f,"
+          "\"lux\":%.1f,"
+          "\"voltage\":%.1f,"
+          "\"current\":%.3f,"
+          "\"power\":%.1f,"
+          "\"energy\":%.3f,"
+          "\"frequency\":%.1f,"
+          "\"pf\":%.2f"
+          "}",
+          env.temperature,
+          env.humidity,
+          env.lux,
+          energy.voltage,
+          energy.current,
+          energy.power,
+          energy.energy,
+          energy.frequency,
+          energy.pf
+      );
+
+        /*
+        snprintf(payload, sizeof(payload),
             "{"
               "\"timestamp\":\"%04d-%02d-%02d %02d:%02d:%02d\","
               "\"env\":{"
@@ -75,12 +99,12 @@ void vTaskMQTTPayload(void *pv)
             energy.energy,
             energy.frequency,
             energy.pf
-        );
+        );*/
 
         /* Publica via MQTT */
         mqtt_publish_async(MQTT_TOPIC_STATUS, payload);
 
-        printf("[MQTT PAYLOAD] %s\n", payload);
+        //printf("[MQTT PAYLOAD] %s\n", payload);
 
         vTaskDelay(pdMS_TO_TICKS(MQTT_PAYLOAD_PERIOD_MS));
     }

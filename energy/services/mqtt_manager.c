@@ -56,13 +56,13 @@ void mqtt_manager_init(void)
 {
     mqtt_client = mqtt_client_new();
     if (!mqtt_client) {
-        printf("[MQTT] ERRO: mqtt_client_new() retornou NULL\n");
+        //printf("[MQTT] ERRO: mqtt_client_new() retornou NULL\n");
         return;
     }
 
     mqttQueue = xQueueCreate(4, sizeof(mqtt_message_t));
     if (!mqttQueue) {
-        printf("[MQTT] ERRO: Falha ao criar fila MQTT\n");
+        //printf("[MQTT] ERRO: Falha ao criar fila MQTT\n");
         return;
     }
 
@@ -70,7 +70,7 @@ void mqtt_manager_init(void)
     mqtt_publish_busy = false;
     last_dns_try      = 0;
 
-    printf("[MQTT] Manager inicializado\n");
+    //printf("[MQTT] Manager inicializado\n");
 }
 
 /* =========================================================
@@ -123,7 +123,7 @@ static void mqtt_connection_cb(mqtt_client_t *client,
     if (status == MQTT_CONNECT_ACCEPTED) {
         mqtt_connected = true;
         mqtt.connected = true;
-        printf("[MQTT] Conectado ao broker\n");
+        //printf("[MQTT] Conectado ao broker\n");
     } else {
         mqtt_connected = false;
         mqtt.connected = false;
@@ -155,7 +155,7 @@ static void mqtt_dns_callback(const char *name,
         .keep_alive = MQTT_KEEPALIVE
     };
 
-    printf("[MQTT] Conectando ao broker...\n");
+    //printf("[MQTT] Conectando ao broker...\n");
 
     mqtt_client_connect(
         mqtt_client,
@@ -176,7 +176,7 @@ void vTaskMQTTConnection(void *pv)
 
     wifi_state_t wifi;
 
-    printf("[MQTT] Task MQTTConnection iniciou\n");
+    //printf("[MQTT] Task MQTTConnection iniciou\n");
 
     for (;;)
     {
