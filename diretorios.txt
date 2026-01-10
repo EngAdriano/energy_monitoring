@@ -1,0 +1,83 @@
+📂ENERGY
+┣ 📂app
+┃ ┣ 📜app_init.c
+┃ ┣ 📜app_init.h
+┃ ┣ 📜app_tasks.c
+┃ ┗ 📜app_tasks.h
+┣ 📂core
+┃ ┣ 📜system_state.c
+┃ ┣ 📜system_state.h
+┃ ┣ 📜time_manager.c
+┃ ┗ 📜time_manager.h
+┣ 📂drivers
+┃ ┣ 📂aht10
+┃ ┃ ┣ 📜aht10.c
+┃ ┃ ┗ 📜aht10.h
+┃ ┣ 📂bh1750
+┃ ┃ ┣ 📜bh1750.c
+┃ ┃ ┗ 📜bh1750.h
+┃ ┣ 📂eeprom_at24c32
+┃ ┃ ┣ 📜eeprom_at24c32.c
+┃ ┃ ┗ 📜eeprom_at24c32.h
+┃ ┣ 📂pzem004t
+┃ ┃ ┣ 📜pzem004t.c
+┃ ┃ ┗ 📜pzem004t.h
+┃ ┣ 📂rtc_ds3231
+┃ ┃ ┣ 📜rtc_ds3231.c
+┃ ┃ ┗ 📜rtc_ds3231.h
+┃ ┗ 📂st7735
+┃   ┣ 📜fonts.c
+┃   ┣ 📜fonts.h
+┃   ┣ 📜st7735.c
+┃   ┣ 📜st7735.h
+┃   ┗ 📜testimg.h
+┣ 📂include
+┃ ┗ 📜project_config.h
+┣ 📂services
+┃ ┣ 📂auth
+┃ ┃ ┣ 📜auth_storage.c
+┃ ┃ ┗ 📜auth_storage.h
+┃ ┣ 📂factory_reset
+┃ ┃ ┣ 📜factory_reset.c
+┃ ┃ ┗ 📜factory_reset.h
+┃ ┣ 📂rtc
+┃ ┃ ┣ 📜rtc_service.c
+┃ ┃ ┗ 📜rtc_service.h
+┃ ┣ 📂webserver
+┃ ┃ ┣ 📜webserver_pages.h
+┃ ┃ ┣ 📜webserver_task.c
+┃ ┃ ┗ 📜webserver_task.h
+┃ ┣ 📜lwip_poll_service.c
+┃ ┣ 📜lwip_poll_service.h
+┃ ┣ 📜mqtt_manager.c
+┃ ┣ 📜mqtt_manager.h
+┃ ┣ 📜mqtt_payload_service.c
+┃ ┣ 📜mqtt_payload_service.h
+┃ ┣ 📜mqtt_topics.h
+┃ ┣ 📜wifi_manager.c
+┃ ┗ 📜wifi_manager.h
+┣ 📂tasks
+┃ ┣ 📜task_energy.c
+┃ ┣ 📜task_energy.h
+┃ ┣ 📜task_env_sensors.c
+┃ ┣ 📜task_env_sensors.h
+┃ ┣ 📜task_ui.c
+┃ ┗ 📜task_ui.h
+┣ 📂ui
+┃ ┣ 📜icons_12x12.h
+┃ ┣ 📜ui_energy.c
+┃ ┣ 📜ui_energy.h
+┃ ┣ 📜ui_environment.c
+┃ ┣ 📜ui_environment.h
+┃ ┣ 📜ui_events.c
+┃ ┗ 📜ui_events.h
+┣ 📂utils
+┃ ┗ 📂crypto
+┃   ┣ 📜sha256.c
+┃   ┗ 📜sha256.h
+┣ 📜.gitignore
+┣ 📜CMakeLists.txt
+┣ 📜energy.c
+┣ 📜FreeRTOSConfig.h
+┣ 📜lwipopts.h
+┗ 📜pico_sdk_import.cmake
