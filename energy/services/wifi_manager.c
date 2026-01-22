@@ -19,8 +19,8 @@
 /* =====================================================
  * Configurações de rede
  * ===================================================== */
-#define WIFI_SSID       "Lu e Deza"
-#define WIFI_PASSWORD   "liukin1208"
+#define WIFI_SSID       "ITSelf"
+#define WIFI_PASSWORD   "code2020"
 
 #define WIFI_TASK_DELAY_MS   5000
 
